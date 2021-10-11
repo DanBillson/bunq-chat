@@ -1,8 +1,10 @@
 import '@fontsource/montserrat'
 import { AppProps } from 'next/app'
 import Head from 'next/head'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { normalize } from 'styled-normalize'
+import { bunq } from '../utils/api'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -30,6 +32,20 @@ const theme = {
   },
 }
 
+const defaultQueryFn = async ({ queryKey }: any) => {
+  const { data } = await bunq.get(queryKey[0])
+  return data
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: defaultQueryFn,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
+
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
@@ -41,7 +57,9 @@ export default function App({ Component, pageProps }: AppProps) {
       </Head>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
+        <QueryClientProvider client={queryClient}>
+          <Component {...pageProps} />
+        </QueryClientProvider>
       </ThemeProvider>
     </>
   )

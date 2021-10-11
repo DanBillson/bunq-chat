@@ -1,3 +1,7 @@
+import { useQuery } from 'react-query'
+
 export default function Home() {
-  return <div>Hello world</div>
+  const { data } = useQuery<string>('/ping')
+
+  return <div>{data}</div>
 }
