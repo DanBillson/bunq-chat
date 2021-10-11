@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { normalize } from 'styled-normalize'
 import { bunq } from '../utils/api'
+import { Header } from '../components/header'
+import { AuthProvider } from '../context/auth'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -15,6 +17,8 @@ const GlobalStyle = createGlobalStyle`
   body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    color: #272727;
+    background-color: #f5f8fc;
   }
   p {
     letter-spacing: 0.5px;
@@ -58,7 +62,10 @@ export default function App({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
-          <Component {...pageProps} />
+          <AuthProvider>
+            <Header />
+            <Component {...pageProps} />
+          </AuthProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </>
