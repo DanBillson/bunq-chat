@@ -25,7 +25,14 @@ export default function Home({ users }: HomeProps) {
     <>
       <Header>
         <Logo>Bunq Chat</Logo>
-        <Logout onClick={() => setUser(null)}>Logout</Logout>
+        <Logout
+          onClick={() => {
+            setUser(null)
+            router.push('/')
+          }}
+        >
+          Logout
+        </Logout>
       </Header>
       <Wrapper>
         <Sidebar>
