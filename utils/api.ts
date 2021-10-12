@@ -33,14 +33,12 @@ export type CreateConversationRequest = {
   name?: string
 }
 
-export type CreateConversationResponse = Res<Conversation[]>
-
 export const createConversation = (
   userId: number,
   invitees: number[],
   groupName?: string
 ) =>
-  bunq.post<CreateConversationRequest, CreateConversationResponse>(
+  bunq.post<CreateConversationRequest, Res<Conversation>>(
     `/user/${userId}/conversation`,
     {
       user_ids: invitees,
@@ -49,4 +47,11 @@ export const createConversation = (
   )
 
 export const getConversations = (userId: number) =>
-  bunq.get<Res<User[]>>(`/user/${userId}/conversation`)
+  bunq.get<Res<Conversation[]>>(`/user/${userId}/conversation`)
+
+export type Message = {
+  id: number
+  user_id: number
+  text: string
+  sent_at: string
+}

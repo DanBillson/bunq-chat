@@ -1,25 +1,20 @@
 import { GetServerSidePropsContext } from 'next'
+import { useRouter } from 'next/router'
 import styled from 'styled-components'
 import { Conversations } from '../components/conversations'
+import { Messages } from '../components/messages'
 import { Users } from '../components/users'
 import { useAuth } from '../context/auth'
+import { ChatProvider } from '../context/chat'
 import { getUsers, User } from '../utils/api'
-import { useRouter } from 'next/router'
-import { useIsomorphicLayoutEffect } from 'react-use'
 
 interface HomeProps {
   users: User[]
 }
 
 export default function Home({ users }: HomeProps) {
-  const [user, setUser] = useAuth()
+  const [, setUser] = useAuth()
   const router = useRouter()
-
-  useIsomorphicLayoutEffect(() => {
-    if (!user) {
-      router.replace('/')
-    }
-  }, [])
 
   return (
     <>
@@ -34,23 +29,40 @@ export default function Home({ users }: HomeProps) {
           Logout
         </Logout>
       </Header>
-      <Wrapper>
-        <Sidebar>
-          <Label>Conversations</Label>
-          <Conversations />
-          <Label>Users</Label>
-          <Users users={users} />
-        </Sidebar>
-        <div>Messages</div>
-      </Wrapper>
+      <ChatProvider>
+        <Wrapper>
+          <Sidebar>
+            <div>
+              <Label>Conversations</Label>
+              <Conversations />
+            </div>
+            <div>
+              <Label>Users</Label>
+              <Users users={users} />
+            </div>
+          </Sidebar>
+          <Messages />
+        </Wrapper>
+      </ChatProvider>
     </>
   )
 }
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
+  const userId = context.req.cookies['bunq-chat-user']
+
+  if (!userId) {
+    return {
+      redirect: '/',
+      permanent: false,
+    }
+  }
+
   const { data: usersData } = await getUsers()
 
-  const users = usersData.data.sort((a, b) => a.id - b.id)
+  const users = usersData.data
+    .filter(({ id }) => String(id) !== userId)
+    .sort((a, b) => a.id - b.id)
 
   return {
     props: { users },
@@ -70,6 +82,9 @@ const Wrapper = styled.div`
 `
 
 const Sidebar = styled.div`
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-row-gap: 2rem;
   height: 100%;
   overflow-y: auto;
 `

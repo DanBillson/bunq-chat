@@ -1,15 +1,24 @@
 import { createContext, useContext } from 'react'
-import { useSessionStorage } from 'react-use'
+import { useCookie } from 'react-use'
 
 const AuthContext = createContext<any>(null)
 
 export const AuthProvider = (props: any) => {
-  return (
-    <AuthContext.Provider
-      {...props}
-      value={useSessionStorage('bunq-chat-user')}
-    />
-  )
+  const [cookieValue, setCookieValue, deleteCookie] =
+    useCookie('bunq-chat-user')
+
+  const setValue = (value: number | null) => {
+    if (value === null) {
+      deleteCookie()
+      return
+    }
+
+    setCookieValue(String(value))
+  }
+
+  const value = [cookieValue, setValue]
+
+  return <AuthContext.Provider {...props} value={value} />
 }
 
 export const useAuth = () => {

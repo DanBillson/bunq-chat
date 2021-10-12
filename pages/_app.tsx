@@ -7,6 +7,17 @@ import { normalize } from 'styled-normalize'
 import { AuthProvider } from '../context/auth'
 import { bunq } from '../utils/api'
 
+const theme = {
+  colors: {
+    primary: '#00e4bd',
+    secondary: '#9865d5',
+    tertiary: '#fc0064',
+    neutral: '#f5f8fc',
+    fg: '#272727',
+    bg: '#fff',
+  },
+}
+
 const GlobalStyle = createGlobalStyle`
   ${normalize}
 
@@ -17,23 +28,13 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     color: #272727;
-    background-color: #f5f8fc;
+    background-color: ${theme.colors.neutral};
   }
   p {
     letter-spacing: 0.5px;
     line-height: 1.6rem;
   }
 `
-
-const theme = {
-  colors: {
-    primary: '#00e4bd',
-    secondary: '#9865d5',
-    tertiary: '#fc0064',
-    fg: '#272727',
-    bg: '#fff',
-  },
-}
 
 const defaultQueryFn = async ({ queryKey }: any) => {
   const { data } = await bunq.get(queryKey[0])

@@ -1,15 +1,16 @@
 import styled from 'styled-components'
-import { User } from '../utils/api'
 
-interface UserProps extends User {
+interface ProfileProps {
+  id: number
+  name: string
   onClick: (id: number) => void
 }
 
-export const Profile: React.FC<UserProps> = ({
+export const Profile: React.FC<ProfileProps> = ({
   id,
   name,
   onClick,
-}: UserProps) => {
+}: ProfileProps) => {
   const initial = name.slice(0, 1)
 
   return (
