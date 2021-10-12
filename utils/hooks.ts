@@ -4,5 +4,5 @@ import { CreateConversationResponse } from './api'
 
 export const useConversation = () => {
   const [user] = useAuth()
-  return useQuery<CreateConversationResponse>(`/user/${user.id}/conversation`)
+  return useQuery<CreateConversationResponse>(`/user/${user}/conversation`)
 }

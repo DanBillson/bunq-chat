@@ -2,19 +2,18 @@ import styled from 'styled-components'
 import { User } from '../utils/api'
 
 interface UserProps extends User {
-  onClick: (user: User) => void
+  onClick: (id: number) => void
 }
 
 export const Profile: React.FC<UserProps> = ({
   id,
   name,
-  last_seen_at,
   onClick,
 }: UserProps) => {
   const initial = name.slice(0, 1)
 
   return (
-    <Wrapper onClick={() => onClick({ id, name, last_seen_at })}>
+    <Wrapper onClick={() => onClick(id)}>
       <Icon initial={initial}>{initial}</Icon>
       {name}
     </Wrapper>

@@ -4,9 +4,8 @@ import Head from 'next/head'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { normalize } from 'styled-normalize'
-import { bunq } from '../utils/api'
-import { Header } from '../components/header'
 import { AuthProvider } from '../context/auth'
+import { bunq } from '../utils/api'
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -63,7 +62,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <ThemeProvider theme={theme}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
-            <Header />
             <Component {...pageProps} />
           </AuthProvider>
         </QueryClientProvider>
