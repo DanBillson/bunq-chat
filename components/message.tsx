@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { useAuth } from '../context/auth'
+import { useChat } from '../context/chat'
 import { Message as MessageType } from '../utils/api'
 
 interface MessageProps {
@@ -8,12 +9,28 @@ interface MessageProps {
 
 export const Message = ({ message }: MessageProps) => {
   const [user] = useAuth()
+  const { chat } = useChat()
   const { user_id, text } = message
 
   const isSelf = user === String(user_id)
 
-  return <Bubble self={isSelf}>{text}</Bubble>
+  if (chat.members.length <= 2) return <Bubble self={isSelf}>{text}</Bubble>
+
+  const { name } = chat.members.find(({ id }: any) => id === message.user_id)
+
+  return (
+    <div>
+      {!isSelf ? <SentFrom>{name}</SentFrom> : null}
+      <Bubble self={isSelf}>{text}</Bubble>
+    </div>
+  )
 }
+
+const SentFrom = styled.span`
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+`
 
 const Bubble = styled.div<{ self: boolean }>`
   display: flex;

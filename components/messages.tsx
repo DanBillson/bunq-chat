@@ -48,9 +48,15 @@ export const Messages = ({ users }: MessagesProps) => {
     }
   )
 
-  if (!chatName) return null
+  if (!chatName)
+    return (
+      <Wrapper>
+        <InfoBar chatName={null} users={users} />
+      </Wrapper>
+    )
 
   const onSubmit = ({ text }: any) => {
+    if (!text.trim()) return
     sendMessage(text)
     reset()
   }

@@ -8,7 +8,7 @@ import { Modal } from './modal'
 import { Profile } from './profile'
 
 interface InfoBarProps {
-  chatName: string
+  chatName: string | null
   users: User[]
 }
 
@@ -55,7 +55,11 @@ export const InfoBar = ({ chatName, users }: InfoBarProps) => {
   return (
     <>
       <Wrapper>
-        <p>You are chatting with {chatName}</p>
+        <p>
+          {chatName
+            ? `You are chatting with ${chatName}`
+            : 'Create a new conversation'}
+        </p>
         <IconButton onClick={() => setShowModal(true)}>+</IconButton>
       </Wrapper>
       <Modal isOpen={showModal} onDismiss={() => setShowModal(false)}>
