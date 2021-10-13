@@ -41,7 +41,7 @@ export default function Home({ users }: HomeProps) {
               <Users users={users} />
             </div>
           </Sidebar>
-          <Messages />
+          <Messages users={users} />
         </Wrapper>
       </ChatProvider>
     </>

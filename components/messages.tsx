@@ -1,3 +1,4 @@
+import { compareAsc } from 'date-fns'
 import { useForm } from 'react-hook-form'
 import { GrSend } from 'react-icons/gr'
 import { useMutation, useQuery, useQueryClient } from 'react-query'
@@ -5,31 +6,38 @@ import { useIsomorphicLayoutEffect } from 'react-use'
 import styled from 'styled-components'
 import { useAuth } from '../context/auth'
 import { useChat } from '../context/chat'
-import { bunq, Message as MessageType } from '../utils/api'
+import { bunq, Message as MessageType, User } from '../utils/api'
 import { useConversations } from '../utils/hooks'
 import { Box } from './box'
+import { InfoBar } from './infoBar'
 import { Message } from './message'
-import { compareAsc } from 'date-fns'
 
-export const Messages = () => {
+interface MessagesProps {
+  users: User[]
+}
+
+export const Messages = ({ users }: MessagesProps) => {
   const queryClient = useQueryClient()
   const [user] = useAuth()
   const { register, handleSubmit, reset } = useForm()
   const { data: conversations } = useConversations()
   const { chat, setChat } = useChat()
 
+  const { id: chatId, chatName } = chat || {}
+
   useIsomorphicLayoutEffect(() => {
-    if (!chat && conversations && conversations.data.length >= 1) {
+    if (!chatName && conversations && conversations.data.length >= 1) {
       const [conversation] = conversations.data
       setChat(conversation)
     }
   }, [])
 
-  const { id: chatId, name, members } = chat || {}
-
   const messagesQueryKey = `/user/${user}/conversation/${chatId}/message`
 
-  const { data: messages } = useQuery<{ data: MessageType[] }>(messagesQueryKey)
+  const { data: messages } = useQuery<{ data: MessageType[] }>(
+    messagesQueryKey,
+    { enabled: Boolean(user) && Boolean(chatId) }
+  )
 
   const { mutate: sendMessage } = useMutation(
     (text) => bunq.post(messagesQueryKey, { text }),
@@ -40,10 +48,7 @@ export const Messages = () => {
     }
   )
 
-  if (!chat) return null
-
-  const chatName =
-    name || members?.filter(({ id }: any) => String(id) !== user)[0].name || ''
+  if (!chatName) return null
 
   const onSubmit = ({ text }: any) => {
     sendMessage(text)
@@ -52,7 +57,7 @@ export const Messages = () => {
 
   return (
     <Wrapper>
-      <p>You are chatting with {chatName}</p>
+      <InfoBar chatName={chatName} users={users} />
       <Box>
         <Container>
           <MessageList>
@@ -130,12 +135,14 @@ const Button = styled.button`
   height: 3rem;
   width: 3rem;
   border-radius: 50%;
+  color: ${({ theme }) => theme.colors.bg};
   background-color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
   border: none;
 `
 
 const Icon = styled(GrSend)`
   path {
-    stroke: white;
+    stroke: ${({ theme }) => theme.colors.bg};
   }
 `

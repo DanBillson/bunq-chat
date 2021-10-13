@@ -4,7 +4,9 @@ import { Conversation, createConversation, Res } from './api'
 
 export const useConversations = () => {
   const [user] = useAuth()
-  return useQuery<Res<Conversation[]>>(`/user/${user}/conversation`)
+  return useQuery<Res<Conversation[]>>(`/user/${user}/conversation`, {
+    enabled: Boolean(user),
+  })
 }
 
 export type NewConversationArgs = {

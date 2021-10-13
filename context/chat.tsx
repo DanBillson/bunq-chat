@@ -21,6 +21,10 @@ export const ChatProvider = (props: any) => {
   const [currentChat, setCurrentChat] = useState<ChatState | null>(null)
   const { mutate: createConversationMutate } = useCreateConversation()
 
+  const { name, members } = currentChat || {}
+  const chatName =
+    name || members?.filter(({ id }: any) => String(id) !== user)[0].name || ''
+
   const createConversation = ({ invitees, groupName }: NewConversationArgs) => {
     createConversationMutate(
       { invitees, groupName },
@@ -34,7 +38,7 @@ export const ChatProvider = (props: any) => {
   }
 
   const value = {
-    chat: currentChat,
+    chat: { ...currentChat, chatName },
     setChat: setCurrentChat,
     createConversation,
   }
