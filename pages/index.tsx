@@ -1,4 +1,3 @@
-import { GetServerSidePropsContext } from 'next'
 import styled from 'styled-components'
 import { Login } from '../components/login'
 import { getUsers, User } from '../utils/api'
@@ -18,7 +17,7 @@ export default function Home({ users }: HomeProps) {
   )
 }
 
-export async function getServerSideProps(context: GetServerSidePropsContext) {
+export async function getServerSideProps() {
   const { data: usersData } = await getUsers()
 
   const users = usersData.data.sort((a, b) => a.id - b.id)
